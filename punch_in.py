@@ -12,22 +12,23 @@ workhoursdaliy = 8
 
 
 
-while(1):
+def workday():
     driver = webdriver.Chrome(ChromeDriveDir)
     #    go to page
-    driver.get("http://human.is.ncu.edu.tw/HumanSys/login")
+    driver.get("https://cis.ncu.edu.tw/HumanSys/login")
     time.sleep(WaitLoadTime)
     elem = driver.find_element_by_id("userid_input")
     elem.send_keys('106524018')
     elem = driver.find_element_by_name("j_password")
-    elem.send_keys('!Gavin17423')
+    elem.send_keys('gavin840511')
+
     elem.send_keys(Keys.RETURN)
     time.sleep(WaitLoadTime)
-    driver.get("http://human.is.ncu.edu.tw/HumanSys/student/stdSignIn")
+    driver.get("https://cis.ncu.edu.tw/HumanSys/student/stdSignIn")
     time.sleep(WaitLoadTime)
 
     elem = driver.find_element_by_id("table1")
-
+    
 
     link_list = []
     for row in elem.find_elements_by_tag_name("tr"):
@@ -41,28 +42,33 @@ while(1):
                         print(link)
                         link_list.append(link)
 
-    nextturnwaittime = workhoursdaliy*60*60
+    #nextturnwaittime = workhoursdaliy*60*60
     for i in link_list:
 
         driver.get(i)
 
-        try:
+        try: #sign in
             elem = driver.find_element_by_id("signin")
             elem.click()
         except Exception as e:
             #print(e)
-            try:
+            try: # sign out
                 elem = driver.find_element_by_id("AttendWork")
                 elem.send_keys('coding works')
                 elem = driver.find_element_by_id("signout")
                 elem.click()
-                nextturnwaittime = 24*60*60  
+                #nextturnwaittime = 0#16*60*60  
             except Exception as e2:
-                print(e)   
-    print("Next Turn:",nextturnwaittime/3600,"hrs")
+                print(e)
     driver.close()
-    time.sleep(nextturnwaittime)
-
+    '''
+	if not nextturnwaittime == 0 : 
+		print("Next Turn:",nextturnwaittime/3600,"hrs")
+		driver.close()
+		time.sleep(nextturnwaittime)
+	else:
+		pass
+	'''
 
 #id="signin"
 #id="signout"
@@ -78,4 +84,10 @@ elem.send_keys(FaceBookPass)
 elem.send_keys(Keys.RETURN)
 time.sleep(WaitLoadTime)
 '''
-
+while 1:
+	if str(datetime.datetime.now().strftime("%H")) == '16' or str(datetime.datetime.now().strftime("%H")) == '08':
+		workday()
+		print("signed",str(datetime.datetime.now().strftime("%H")))
+	else:
+		print(str(datetime.datetime.now().strftime("%H")))
+	time.sleep(1*60*60)# 1 hour
